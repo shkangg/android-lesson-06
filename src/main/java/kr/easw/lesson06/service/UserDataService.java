@@ -5,10 +5,12 @@ import jakarta.annotation.PostConstruct;
 import kr.easw.lesson06.model.dto.UserAuthenticationDto;
 import kr.easw.lesson06.model.dto.UserDataEntity;
 import kr.easw.lesson06.model.repository.UserDataRepository;
+import kr.easw.lesson06.service.JwtService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 import java.util.Optional;
 
@@ -39,6 +41,21 @@ public class UserDataService {
     // 이 메서드는 유저를 생성합니다.
     public void createUser(UserDataEntity entity) {
         repository.save(entity);
+    }
+
+    // 모든 사용자를 가져오는 메소드
+    public List<UserDataEntity> getAllUsers() {
+        return repository.findAll();
+    }
+
+    // 사용자 삭제 메소드
+    public boolean removeUser(String userId) {
+        Optional<UserDataEntity> userOpt = repository.findByUserId(userId);
+        if (userOpt.isPresent()) {
+            repository.delete(userOpt.get());
+            return true;
+        }
+        return false;
     }
 
     // 이 메서드는 유저를 생성하고, 생성된 유저의 토큰을 반환합니다.
